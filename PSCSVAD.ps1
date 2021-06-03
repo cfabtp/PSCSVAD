@@ -44,10 +44,10 @@ function ui_menuPrincipal
     Write-Host "* sa    : Afficher la synthèse par classe de l'Active Directory"
     Write-Host
     Write-Host "- ib    : Importer la base de données en RAM"
-    Write-Host "* ie    : Importer l'export Ypareo en RAM"
+    Write-Host "- ie    : Importer l'export Ypareo en RAM"
     Write-Host
     Write-Host "* v     : Vérification de l'intégrité de la base de données sur AD"
-    Write-Host "* d     : Afficher le delta (Export Ypareo / Base de données)"
+    Write-Host "- d     : Afficher le delta (Export Ypareo / Base de données)"
     Write-Host
     Write-Host "* p     : Générer un CSV pour publipostage des nouveaux codes"
     Write-Host
@@ -127,13 +127,13 @@ function utilisateursInactifsYpareo
 
 function lectureRawBDD
 {
-    Import-Csv .\ADUsers.csv -delimiter ";"
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";"
     Read-Host
 }
 
 function lectureRawExport
 {
-    Import-Csv .\export.csv -delimiter ";"
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\export.csv -delimiter ";"
     Read-Host
 }
 
@@ -182,7 +182,7 @@ function syntheseAD
 
 function importerBDD
 {
-    Import-Csv .\ADUsers.csv -delimiter ";" | ForEach-Object {
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";" | ForEach-Object {
         $global:BDD_NOM_APPRENANT += $_.NOM_APPRENANT
         $global:BDD_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
         $global:BDD_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
@@ -194,7 +194,35 @@ function importerBDD
         $global:BDD_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
 
+    write-host "Nombre d'entrées :"
+    $BDD_NOM_APPRENANT.count
+
+    Write-Host "Importation de la base de données en RAM terminée"
     Write-Host
+
+    #$BDD_NOM_NET_UTILISATEUR_APPRENANT[0..10]
+
+    Read-Host "Continuer ?"
+}
+
+
+function importerExport
+{
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\export.csv -delimiter ";" | ForEach-Object {
+        $global:export_NOM_APPRENANT += $_.NOM_APPRENANT
+        $global:export_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
+        $global:export_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
+        $global:export_PASSWORD_NET_UTILISATEUR_APPRE += $_.PASSWORD_NET_UTILISATEUR_APPRE
+        $global:export_MDP_AD += $_.MDP_AD
+        $global:export_EMAIL_COURRIER += $_.EMAIL_COURRIER
+        $global:export_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
+        $global:export_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
+        $global:export_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
+    }
+
+    write-host "Nombre d'entrées :"
+    $export_NOM_APPRENANT.count
+
     Write-Host "Importation de la base de données en RAM terminée"
     Write-Host
 
@@ -207,12 +235,25 @@ function importerBDD
 
 function delta
 {
-  $CSV1 = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\BDD.csv -delimiter ";"
-  $CSV2 = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\export.csv -delimiter ";"
+        $export = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\export.csv -delimiter ";"
+        $ADUsers = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";"
 
-  
-  Compare-Object -ReferenceObject $CSV1 -DifferenceObject $CSV2 -Property Pays | Where{ $_.SideIndicator -eq "<=" }
-       Read-Host
+        Compare-Object -ReferenceObject $export -DifferenceObject $ADUsers  -Property NOM_APPRENANT,PRENOM_APPRENANT,NOM_NET_UTILISATEUR_APPRENANT,PASSWORD_NET_UTILISATEUR_APPRE,EMAIL_COURRIER,TELEPHONE_COURRIER,PORTABLE_COURRIER,ABREGE_GROUPE_APPRENANT | Where{ $_.SideIndicator -eq "<=" } | ForEach-Object {
+        $delta_NOM_APPRENANT += $_.NOM_APPRENANT
+        $delta_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
+        $delta_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
+        $delta_PASSWORD_NET_UTILISATEUR_APPRE += $_.PASSWORD_NET_UTILISATEUR_APPRE
+        $delta_MDP_AD += $_.MDP_AD
+        $delta_EMAIL_COURRIER += $_.EMAIL_COURRIER
+        $delta_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
+        $delta_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
+        $delta_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
+    } 
+
+    Write-Host "Comparaison en RAM terminée"
+    Write-Host
+
+    Read-Host "Continuer ?"
 }
 
 
@@ -247,6 +288,9 @@ function trierCSV
 
 function initVariables
 {
+    $global:export = @()
+    $global:ADUsers = @()
+
     $global:BDD_NOM_APPRENANT = @()
     $global:BDD_PRENOM_APPRENANT = @()
     $global:BDD_NOM_NET_UTILISATEUR_APPRENANT = @()
@@ -256,6 +300,26 @@ function initVariables
     $global:BDD_TELEPHONE_COURRIER = @()
     $global:BDD_PORTABLE_COURRIER = @()
     $global:BDD_ABREGE_GROUPE_APPRENANT = @()
+
+    $global:export_NOM_APPRENANT = @()
+    $global:export_PRENOM_APPRENANT = @()
+    $global:export_NOM_NET_UTILISATEUR_APPRENANT = @()
+    $global:export_PASSWORD_NET_UTILISATEUR_APPRE = @()
+    $global:export_MDP_AD = @()
+    $global:export_EMAIL_COURRIER = @()
+    $global:export_TELEPHONE_COURRIER = @()
+    $global:export_PORTABLE_COURRIER = @()
+    $global:export_ABREGE_GROUPE_APPRENANT = @()
+
+    $global:delta_NOM_APPRENANT = @()
+    $global:delta_PRENOM_APPRENANT = @()
+    $global:delta_NOM_NET_UTILISATEUR_APPRENANT = @()
+    $global:delta_PASSWORD_NET_UTILISATEUR_APPRE = @()
+    $global:delta_MDP_AD = @()
+    $global:delta_EMAIL_COURRIER = @()
+    $global:delta_TELEPHONE_COURRIER = @()
+    $global:delta_PORTABLE_COURRIER = @()
+    $global:delta_ABREGE_GROUPE_APPRENANT = @()
 }
 
 function test
@@ -310,9 +374,9 @@ function verifierPresenceFichiers
     $dir = Get-Location
     Write-Host "Dossier de travail : "$dir
     Write-Host
-    if (Test-Path -Path .\ADUsers.csv) {Write-Host "Base de données : OK"}
+    if (Test-Path -Path ADUsers.csv) {Write-Host "Base de données : OK"}
     else {Write-Host "ERREUR : Base de données absente"}
-    if (Test-Path -Path .\export.csv) {Write-Host "Export Ypareo : OK"}
+    if (Test-Path -Path export.csv) {Write-Host "Export Ypareo : OK"}
     else {Write-Host "ERREUR : Export Ypareo absent"}
     Write-Host
 }
