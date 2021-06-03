@@ -205,6 +205,17 @@ function importerBDD
 
 # Delta #
 
+function delta
+{
+  $CSV1 = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\BDD.csv -delimiter ";"
+  $CSV2 = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\export.csv -delimiter ";"
+
+  
+  Compare-Object -ReferenceObject $CSV1 -DifferenceObject $CSV2 -Property Pays | Where{ $_.SideIndicator -eq "<=" }
+       Read-Host
+}
+
+
 
 
 # Publipostage #
@@ -344,7 +355,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "ie") {importerExport}
 
     If($choix -eq "v") {}
-    If($choix -eq "d") {}
+    If($choix -eq "d") {delta}
 
     If($choix -eq "p") {}
 
