@@ -314,7 +314,10 @@ function ajouterNvxUtilisateursToADUsers
 
 # Création #
 
-
+function creerNvxUtilisateursAD
+{
+  
+}
 
 # Suppression #
 
@@ -456,7 +459,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "f") {chercherUtilisateur}
 
     If($choix -eq "usmad") {utilisateursSansMDP}
-    If($choix -eq "uiy") {}
+    If($choix -eq "uiy")   {}
 
     If($choix -eq "rb") {lectureRawBDD}
     If($choix -eq "re") {lectureRawExport}
@@ -466,22 +469,22 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "ib") {importerBDD}
     If($choix -eq "ie") {importerExport}
 
-    If($choix -eq "v") {}
+    If($choix -eq "v")  {}
     If($choix -eq "dn") {faireDeltaNouveauxUtilisateurs}
     If($choix -eq "dp") {faireDeltaUtilisateursPartis}
 
     If($choix -eq "p") {}
 
     # Modification
-    If($choix -eq "svg") {sauvegarderADUsers}
+    If($choix -eq "svg")  {sauvegarderADUsers}
 
-    If($choix -eq "t") {trierCSV}
+    If($choix -eq "t")    {trierCSV}
 
-    If($choix -eq "ina") {ajouterNvxUtilisateursToADUsers}
+    If($choix -eq "ina")  {ajouterNvxUtilisateursToADUsers}
 
-    If($choix -eq "c") {}
+    If($choix -eq "c")    {creerNvxUtilisateursAD}
 
-    If($choix -eq "s") {}
+    If($choix -eq "s")    {}
 
     # Sortie
 
