@@ -1,4 +1,4 @@
-﻿﻿##### FONCTIONS - INTERFACE UTILISATEUR #####
+##### FONCTIONS - INTERFACE UTILISATEUR #####
 
 function color ($bc,$fc) {
 $a = (Get-Host).UI.RawUI
@@ -55,11 +55,13 @@ function ui_menuPrincipal
     Write-Host
     Write-Host "##### MODIFICATION #####"
     Write-Host
-    Write-Host "* t  : Tri alphanumérique de la base de données"
+    Write-Host "* t    : Tri alphanumérique de la base de données"
     Write-Host
-    Write-Host "* c  : Création des nouveaux utilisateurs"
+    Write-Host "* ina  : Intégrer les nouveaux utilisateurs dans l'ADUsers "
     Write-Host
-    Write-Host "* s  : Suppression des utilisateurs expirés"
+    Write-Host "* c    : Création des nouveaux utilisateurs"
+    Write-Host
+    Write-Host "* s    : Suppression des utilisateurs expirés"
     Write-Host
     Write-Host
     Write-Host "##### SORTIE / DEBUG #####"
@@ -249,7 +251,7 @@ function faireDeltaNouveauxUtilisateurs
         $deltaNv_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
         $deltaNv_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
         $deltaNv_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
-    } 
+    }
     Write-Host $deltaNv_NOM_APPRENANT
     Write-Host "Comparaison en RAM terminée"
     Write-Host
@@ -272,7 +274,7 @@ function faireDeltaUtilisateursPartis
         $deltaPartis_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
         $deltaPartis_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
         $deltaPartis_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
-    } 
+    }
     Write-Host $deltaPartis_NOM_APPRENANT
     Write-Host "Comparaison en RAM terminée"
     Write-Host
@@ -457,10 +459,13 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "p") {}
 
     # Modification
+    If($choix -eq "svg") {}
 
     If($choix -eq "t") {trierCSV}
 
     If($choix -eq "c") {}
+
+    If($choix -eq "ina") {}
 
     If($choix -eq "s") {}
 
