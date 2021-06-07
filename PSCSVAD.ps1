@@ -293,7 +293,7 @@ function faireDeltaUtilisateursPartis
 
 function sauvegarderADUsers
 {
-  
+
 }
 
 # Tri #
@@ -303,6 +303,13 @@ function trierCSV
     $fichierATrier = Read-Host "Quel fichier ( bdd | export )"
     Write-Host "Démarrage du tri de " $fichierATrier
     Read-Host
+}
+
+# Ajout nvx utilisateurs à l'ADUsers
+
+function ajouterNvxUtilisateursToADUsers
+{
+
 }
 
 # Création #
@@ -470,9 +477,9 @@ While($exit -ne 1)   # If($choix -eq "") {}
 
     If($choix -eq "t") {trierCSV}
 
-    If($choix -eq "c") {}
+    If($choix -eq "ina") {ajouterNvxUtilisateursToADUsers}
 
-    If($choix -eq "ina") {}
+    If($choix -eq "c") {}
 
     If($choix -eq "s") {}
 
