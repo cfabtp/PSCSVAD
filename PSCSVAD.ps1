@@ -289,6 +289,13 @@ function faireDeltaUtilisateursPartis
 
 ### Modification ###
 
+# Sauvegarde ADUsers
+
+function sauvegarderADUsers
+{
+  
+}
+
 # Tri #
 
 function trierCSV
@@ -459,7 +466,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "p") {}
 
     # Modification
-    If($choix -eq "svg") {}
+    If($choix -eq "svg") {sauvegarderADUsers}
 
     If($choix -eq "t") {trierCSV}
 
