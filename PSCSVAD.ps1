@@ -238,21 +238,21 @@ function importerExport
 
 function faireDeltaNouveauxUtilisateurs
 {
+
         $export = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\export.csv -delimiter ";"
         $ADUsers = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";"
 
         Compare-Object -ReferenceObject $export -DifferenceObject $ADUsers  -Property NOM_APPRENANT,PRENOM_APPRENANT,NOM_NET_UTILISATEUR_APPRENANT,PASSWORD_NET_UTILISATEUR_APPRE,EMAIL_COURRIER,TELEPHONE_COURRIER,PORTABLE_COURRIER,ABREGE_GROUPE_APPRENANT | Where{ $_.SideIndicator -eq "<=" } | ForEach-Object {
-        $deltaNv_NOM_APPRENANT += $_.NOM_APPRENANT
-        $deltaNv_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
-        $deltaNv_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
-        $deltaNv_PASSWORD_NET_UTILISATEUR_APPRE += $_.PASSWORD_NET_UTILISATEUR_APPRE
-        $deltaNv_MDP_AD += $_.MDP_AD
-        $deltaNv_EMAIL_COURRIER += $_.EMAIL_COURRIER
-        $deltaNv_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
-        $deltaNv_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
-        $deltaNv_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
+        $global:deltaNv_NOM_APPRENANT += $_.NOM_APPRENANT
+        $global:deltaNv_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
+        $global:deltaNv_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
+        $global:deltaNv_PASSWORD_NET_UTILISATEUR_APPRE += $_.PASSWORD_NET_UTILISATEUR_APPRE
+        $global:deltaNv_MDP_AD += $_.MDP_AD
+        $global:deltaNv_EMAIL_COURRIER += $_.EMAIL_COURRIER
+        $global:deltaNv_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
+        $global:deltaNv_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
+        $global:deltaNv_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
-    Write-Host $deltaNv_NOM_APPRENANT
     Write-Host "Comparaison en RAM terminée"
     Write-Host
 
@@ -265,17 +265,16 @@ function faireDeltaUtilisateursPartis
         $ADUsers = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";"
 
         Compare-Object -ReferenceObject $ADUsers -DifferenceObject $export   -Property NOM_APPRENANT,PRENOM_APPRENANT,NOM_NET_UTILISATEUR_APPRENANT,PASSWORD_NET_UTILISATEUR_APPRE,EMAIL_COURRIER,TELEPHONE_COURRIER,PORTABLE_COURRIER,ABREGE_GROUPE_APPRENANT | Where{ $_.SideIndicator -eq "<=" } | ForEach-Object {
-        $deltaPartis_NOM_APPRENANT += $_.NOM_APPRENANT
-        $deltaPartis_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
-        $deltaPartis_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
-        $deltaPartis_PASSWORD_NET_UTILISATEUR_APPRE += $_.PASSWORD_NET_UTILISATEUR_APPRE
-        $deltaPartis_MDP_AD += $_.MDP_AD
-        $deltaPartis_EMAIL_COURRIER += $_.EMAIL_COURRIER
-        $deltaPartis_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
-        $deltaPartis_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
-        $deltaPartis_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
+        $global:deltaPartis_NOM_APPRENANT += $_.NOM_APPRENANT
+        $global:deltaPartis_PRENOM_APPRENANT += $_.PRENOM_APPRENANT
+        $global:deltaPartis_NOM_NET_UTILISATEUR_APPRENANT += $_.NOM_NET_UTILISATEUR_APPRENANT
+        $global:deltaPartis_PASSWORD_NET_UTILISATEUR_APPRE += $_.PASSWORD_NET_UTILISATEUR_APPRE
+        $global:deltaPartis_MDP_AD += $_.MDP_AD
+        $global:deltaPartis_EMAIL_COURRIER += $_.EMAIL_COURRIER
+        $global:deltaPartis_TELEPHONE_COURRIER += $_.TELEPHONE_COURRIER
+        $global:deltaPartis_PORTABLE_COURRIER += $_.PORTABLE_COURRIER
+        $global:deltaPartis_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
-    Write-Host $deltaPartis_NOM_APPRENANT
     Write-Host "Comparaison en RAM terminée"
     Write-Host
 
@@ -310,14 +309,15 @@ function trierCSV
 function ajouterNvxUtilisateursToADUsers
 {
 
+ $Users = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";"
+ Write-host $deltaNv_NOM_APPRENANT
+
+    Read-Host "Continuer ?"
 }
 
 # Création #
 
-function creerNvxUtilisateursAD
-{
-  
-}
+
 
 # Suppression #
 
@@ -459,7 +459,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "f") {chercherUtilisateur}
 
     If($choix -eq "usmad") {utilisateursSansMDP}
-    If($choix -eq "uiy")   {}
+    If($choix -eq "uiy") {}
 
     If($choix -eq "rb") {lectureRawBDD}
     If($choix -eq "re") {lectureRawExport}
@@ -469,22 +469,22 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "ib") {importerBDD}
     If($choix -eq "ie") {importerExport}
 
-    If($choix -eq "v")  {}
+    If($choix -eq "v") {}
     If($choix -eq "dn") {faireDeltaNouveauxUtilisateurs}
     If($choix -eq "dp") {faireDeltaUtilisateursPartis}
 
     If($choix -eq "p") {}
 
     # Modification
-    If($choix -eq "svg")  {sauvegarderADUsers}
+    If($choix -eq "svg") {sauvegarderADUsers}
 
-    If($choix -eq "t")    {trierCSV}
+    If($choix -eq "t") {trierCSV}
 
-    If($choix -eq "ina")  {ajouterNvxUtilisateursToADUsers}
+    If($choix -eq "ina") {ajouterNvxUtilisateursToADUsers}
 
-    If($choix -eq "c")    {creerNvxUtilisateursAD}
+    If($choix -eq "c") {}
 
-    If($choix -eq "s")    {}
+    If($choix -eq "s") {}
 
     # Sortie
 
