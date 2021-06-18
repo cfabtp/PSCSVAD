@@ -31,37 +31,37 @@ function ui_menuPrincipal
     Write-Host
     Write-Host "##### CONSULTATION #####"
     Write-Host
-    Write-Host "* f     : Chercher un utilisateur dans la base de données"
+    Write-Host "* f     : Chercher un utilisateur dans la base de donnees"
     Write-Host
     Write-Host "* usmad : Utilisateurs sans mot de passe AD"
     Write-Host "* uiy   : Utilisateurs inactifs NetYpareo"
     Write-Host
-    Write-Host "* rb    : Lecture RAW de la base de données"
-    Write-Host "* re    : Lecture RAW de l'export Ypareo"
+    Write-Host "- rb    : Lecture RAW de la base de donnees"
+    Write-Host "- re    : Lecture RAW de l'export Ypareo"
     Write-Host
-    Write-Host "* sb    : Afficher la synthèse par classe de la base de données"
-    Write-Host "* se    : Afficher la synthèse par classe de l'export NetYpareo"
-    Write-Host "* sa    : Afficher la synthèse par classe de l'Active Directory"
+    Write-Host "- sb    : Afficher la synthese par classe de la base de donnees"
+    Write-Host "- se    : Afficher la synthese par classe de l'export NetYpareo"
+    Write-Host "\ sa    : Afficher la synthese par classe de l'Active Directory"
     Write-Host
-    Write-Host "- ib    : Importer la base de données en RAM"
+    Write-Host "- ib    : Importer la base de donn�es en RAM"
     Write-Host "- ie    : Importer l'export Ypareo en RAM"
     Write-Host
-    Write-Host "* v     : Vérification de l'intégrité de la base de données sur AD"
-    Write-Host "- dn    : Afficher le delta (Export Ypareo / Base de données)"
-    Write-Host "- dp    : Afficher le delta (Base de données / Export Ypareo)"
+    Write-Host "* v     : Verification de l'integrite de la base de donnees sur AD"
+    Write-Host "- dn    : Afficher le delta (Export Ypareo / Base de donnees)"
+    Write-Host "- dp    : Afficher le delta (Base de donnees / Export Ypareo)"
     Write-Host
-    Write-Host "* p     : Générer un CSV pour publipostage des nouveaux codes"
+    Write-Host "* p     : Generer un CSV pour publipostage des nouveaux codes"
     Write-Host
     Write-Host
     Write-Host "##### MODIFICATION #####"
     Write-Host
-    Write-Host "* t    : Tri alphanumérique de la base de données"
+    Write-Host "- t    : Tri alphanumerique de la base de donnees"
     Write-Host
-    Write-Host "* ina  : Intégrer les nouveaux utilisateurs dans l'ADUsers "
+    Write-Host "* ina  : Integrer les nouveaux utilisateurs dans l'ADUsers "
     Write-Host
-    Write-Host "* c    : Création des nouveaux utilisateurs"
+    Write-Host "\ c    : Creation des nouveaux utilisateurs"
     Write-Host
-    Write-Host "* s    : Suppression des utilisateurs expirés"
+    Write-Host "* s    : Suppression des utilisateurs expires"
     Write-Host
     Write-Host
     Write-Host "##### SORTIE / DEBUG #####"
@@ -87,9 +87,9 @@ function ui_messageFin
 
 function chercherUtilisateur
 {
+    <# 
     ui_nvPage
     ui_bandeau "RECHERCHE"
-
     Write-Host
     Write-Host "n : Par nom"
     Write-Host "p : Par prénom"
@@ -99,6 +99,16 @@ function chercherUtilisateur
     If($choix -eq "n") {chercherUtilisateurDansBDD}
     If($choix -eq "p") {chercherUtilisateurDansBDD}
     If($choix -eq "q") {break}
+
+    #> 
+
+    Read-Host 
+
+    $Data = Import-Csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv"
+    $Search = Read-Host 
+
+    $MyResult = $Data | Where {$_.NOM_APPRENANT -eq $Search}
+    Write-Host $MyResult 
 
     Read-Host
 }
@@ -149,7 +159,7 @@ function syntheseBDD
 
     importerBDD
 
-    ui_bandeau "Résumé"
+    ui_bandeau "Resume"
     Write-Host
 
     Write-Host "BDD : " $BDD_NOM_NET_UTILISATEUR_APPRENANT.count " comptes distincts"
@@ -173,12 +183,58 @@ function syntheseBDD
 
 function syntheseExport
 {
+    ui_nvPage
+    ui_bandeau "SYNTHESE EXPORT"
 
+    importerExport
+
+    ui_bandeau "Resume"
+    Write-Host
+
+    Write-Host "EXPORT : " $EXPORT_NOM_NET_UTILISATEUR_APPRENANT.count " comptes distincts"
+    Write-Host
+    $groupes = $export_ABREGE_GROUPE_APPRENANT | Group-Object -NoElement | Sort-Object -Property Name
+    Write-Host "Repartis dans " $groupes.count " groupes"
+    Write-Host
+    Write-Host "Pour un total de " "0" " cursus"
+    Write-Host
+    Write-Host
+
+    ui_bandeau "Classes"
+    Write-Host
+
+    $choix = Read-Host "Afficher les groupes ?"
+    If($choix -eq "y") {$groupes}
+    Write-Host
+
+    Read-Host "END func"
 }
 
 function syntheseAD
 {
+    ui_nvPage
+    ui_bandeau "SYNTHESE AD"
 
+    ui_bandeau "Resume"
+    Write-Host
+
+    Write-Host "AD : " (Get-ADUser -Filter *).Count " comptes distincts"
+    Write-Host
+    $groupes = $export_ABREGE_GROUPE_APPRENANT | Group-Object -NoElement | Sort-Object -Property Name
+    Write-Host "Repartis dans " (Get-ADGroup -Filter *).Count " groupes"
+    Write-Host
+    Write-Host "Pour un total de " "0" " cursus"
+    Write-Host
+    Write-Host
+
+    ui_bandeau "Classes"
+    Write-Host
+
+    $choix = Read-Host "Afficher les groupes ?"
+    If($choix -eq "y") {$groupes}
+    Write-Host
+
+    Read-Host "END func"
 }
 
 # Importation #
@@ -200,10 +256,8 @@ function importerBDD
     write-host "Nombre d'entrées :"
     $BDD_NOM_APPRENANT.count
 
-    Write-Host "Importation de la base de données en RAM terminée"
+    Write-Host "Importation de la base de donnees en RAM terminee"
     Write-Host
-
-    #$BDD_NOM_NET_UTILISATEUR_APPRENANT[0..10]
 
     Read-Host "Continuer ?"
 }
@@ -226,7 +280,7 @@ function importerExport
     write-host "Nombre d'entrées :"
     $export_NOM_APPRENANT.count
 
-    Write-Host "Importation de la base de données en RAM terminée"
+    Write-Host "Importation de l'export en RAM terminee"
     Write-Host
 
     #$BDD_NOM_NET_UTILISATEUR_APPRENANT[0..10]
@@ -299,8 +353,8 @@ function sauvegarderADUsers
 
 function trierCSV
 {
-    $fichierATrier = Read-Host "Quel fichier ( bdd | export )"
-    Write-Host "Démarrage du tri de " $fichierATrier
+    Write-Host "Démarrage du tri de la base de donn�es "
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -Delimiter ';'| Sort-Object NOM_APPRENANT �Unique| Export-Csv -Path C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv -NoTypeInformation -Delimiter ';' -Force
     Read-Host
 }
 
@@ -308,15 +362,54 @@ function trierCSV
 
 function ajouterNvxUtilisateursToADUsers
 {
+import-csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv" -delimiter ";" | export-csv -append -path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers_$((Get-Date).ToString('yyyy-MM-dd')).csv" -delimiter ";" -NoTypeInformation
 
- $Users = Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -delimiter ";"
- Write-host $deltaNv_NOM_APPRENANT
 
-    Read-Host "Continuer ?"
+New-Object -TypeName PSCustomObject -Property @{
+FeedName = $deltaNv_NOM_APPRENANT
+} | Export-Csv -Path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers1_$((Get-Date).ToString('yyyy-MM-dd')).csv" -NoTypeInformation -Append
+
+
+
 }
 
 # Création #
 
+function creation
+{
+$ADUsers = Import-csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv
+
+foreach ($User in $ADUsers)
+{
+       $Username = $user.NOM_NET_UTILISATEUR_APPRENANT
+       $Prenom = $User.PRENOM_APPRENANT
+       $Nom    = $User.NOM_APPRENANT
+       $Password    = $User.PASSWORD_NET_UTILISATEUR_APPRE
+       $Mail = $User.EMAIL_COURRIER
+       $TEL = $User.TELEPHONE_COURRIER
+       $Portable = $User.PORTABLE_COURRIER
+       $OU           = $User.ABREGE_GROUPE_APPRENANT
+
+       if (Get-ADUser -F {SamAccountName -eq $Username})
+       {
+               Write-Warning "L'utilisateur existe d�j�"
+       }
+       else
+       {
+              New-ADUser `
+            -SamAccountName $Username `
+            -GivenName $Prenom `
+            -Surname $Nom `
+            -Surname $Lastname `
+            -Enabled $True `
+            -MobilePhone $TEL `
+            -Email $Mail `
+            -Path $OU `
+            -AccountPassword $Password
+       }
+}
+    Read-Host "Continuer ?"
+}
 
 
 # Suppression #
@@ -465,7 +558,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "re") {lectureRawExport}
     If($choix -eq "sb") {syntheseBDD}
     If($choix -eq "se") {syntheseExport}
-    If($choix -eq "se") {syntheseAD}
+    If($choix -eq "sa") {syntheseAD}
     If($choix -eq "ib") {importerBDD}
     If($choix -eq "ie") {importerExport}
 
@@ -482,7 +575,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
 
     If($choix -eq "ina") {ajouterNvxUtilisateursToADUsers}
 
-    If($choix -eq "c") {}
+    If($choix -eq "c") {creation}
 
     If($choix -eq "s") {}
 
