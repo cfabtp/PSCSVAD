@@ -102,13 +102,10 @@ function chercherUtilisateur
 
     #> 
 
-    Read-Host 
 
     $Data = Import-Csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv"
     $Search = Read-Host 
-
     $MyResult = $Data | Where {$_.NOM_APPRENANT -eq $Search}
-    Write-Host $MyResult 
 
     Read-Host
 }
@@ -117,11 +114,11 @@ function chercherUtilisateur
 
 function utilisateursSansMDP
 {
-    param($mode)
-
+    $mode = Read-Host 
     if($mode -eq "nb")     # Mode compteur
     {
-
+        $deltaPartis_NOM_APPRENANT
+        Read-host
     }
 
     if($mode -eq "ls")     # Mode liste
@@ -308,7 +305,7 @@ function faireDeltaNouveauxUtilisateurs
         $global:deltaNv_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
     Write-Host "Comparaison en RAM terminée"
-    Write-Host
+    Write-Host $deltaNv_NOM_APPRENANT
 
     Read-Host "Continuer ?"
 }
@@ -330,7 +327,7 @@ function faireDeltaUtilisateursPartis
         $global:deltaPartis_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
     Write-Host "Comparaison en RAM terminée"
-    Write-Host
+    Write-Host  $deltaPartis_NOM_APPRENANT
 
     Read-Host "Continuer ?"
 }
@@ -367,9 +364,7 @@ import-csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv" -delimiter ";" | e
 
 New-Object -TypeName PSCustomObject -Property @{
 FeedName = $deltaNv_NOM_APPRENANT
-} | Export-Csv -Path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers1_$((Get-Date).ToString('yyyy-MM-dd')).csv" -NoTypeInformation -Append
-
-
+} | Export-Csv -Path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers_$((Get-Date).ToString('yyyy-MM-dd')).csv" -NoTypeInformation -Append
 
 }
 
@@ -552,7 +547,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "f") {chercherUtilisateur}
 
     If($choix -eq "usmad") {utilisateursSansMDP}
-    If($choix -eq "uiy") {}
+    If($choix -eq "uiy") {utilisateursSansMDP}
 
     If($choix -eq "rb") {lectureRawBDD}
     If($choix -eq "re") {lectureRawExport}
