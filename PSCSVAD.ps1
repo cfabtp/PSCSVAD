@@ -87,7 +87,6 @@ function ui_messageFin
 
 function chercherUtilisateur
 {
-    <# 
     ui_nvPage
     ui_bandeau "RECHERCHE"
     Write-Host
@@ -100,12 +99,12 @@ function chercherUtilisateur
     If($choix -eq "p") {chercherUtilisateurDansBDD}
     If($choix -eq "q") {break}
 
-    #> 
-
+    <# 
 
     $Data = Import-Csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv"
     $Search = Read-Host 
     $MyResult = $Data | Where {$_.NOM_APPRENANT -eq $Search}
+        #> 
 
     Read-Host
 }
@@ -117,8 +116,7 @@ function utilisateursSansMDP
     $mode = Read-Host 
     if($mode -eq "nb")     # Mode compteur
     {
-        $deltaPartis_NOM_APPRENANT
-        Read-host
+
     }
 
     if($mode -eq "ls")     # Mode liste
@@ -130,8 +128,9 @@ function utilisateursSansMDP
 
 function utilisateursInactifsYpareo
 {
-
-}
+         ui_nvPage
+         ui_bandeau "INACTIF"
+    }
 
 # Lecture RAW #
 
@@ -162,7 +161,7 @@ function syntheseBDD
     Write-Host "BDD : " $BDD_NOM_NET_UTILISATEUR_APPRENANT.count " comptes distincts"
     Write-Host
     $groupes = $BDD_ABREGE_GROUPE_APPRENANT | Group-Object -NoElement | Sort-Object -Property Name
-    Write-Host "RÃ©partis dans " $groupes.count " groupes"
+    Write-Host "Repartis dans " $groupes.count " groupes"
     Write-Host
     Write-Host "Pour un total de " "0" " cursus"
     Write-Host
@@ -250,7 +249,7 @@ function importerBDD
         $global:BDD_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
 
-    write-host "Nombre d'entrÃ©es :"
+    write-host "Nombre d'entrees :"
     $BDD_NOM_APPRENANT.count
 
     Write-Host "Importation de la base de donnees en RAM terminee"
@@ -274,7 +273,7 @@ function importerExport
         $global:export_ABREGE_GROUPE_APPRENANT += $_.ABREGE_GROUPE_APPRENANT
     }
 
-    write-host "Nombre d'entrÃ©es :"
+    write-host "Nombre d'entrees :"
     $export_NOM_APPRENANT.count
 
     Write-Host "Importation de l'export en RAM terminee"
@@ -350,8 +349,9 @@ function sauvegarderADUsers
 
 function trierCSV
 {
-    Write-Host "DÃ©marrage du tri de la base de données "
-    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -Delimiter ';'| Sort-Object NOM_APPRENANT –Unique| Export-Csv -Path C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv -NoTypeInformation -Delimiter ';' -Force
+    Write-Host "Demarrage du tri de la base de données "
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -Delimiter ';'| Sort-Object NOM_APPRENANT –Unique | Export-Csv -Path C:\Users\tl\Desktop\STAGE\PSCSVAD\Tri\ADUsersTri.csv -NoTypeInformation -Delimiter ';' -Force
+    Import-Csv C:\Users\tl\Desktop\STAGE\PSCSVAD\Tri\ADUsersTri.csv -Delimiter ';'| Sort-Object NOM_APPRENANT –Unique | Export-Csv -Path C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv -NoTypeInformation -Delimiter ';' -Force
     Read-Host
 }
 
@@ -359,20 +359,15 @@ function trierCSV
 
 function ajouterNvxUtilisateursToADUsers
 {
-import-csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv" -delimiter ";" | export-csv -append -path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers_$((Get-Date).ToString('yyyy-MM-dd')).csv" -delimiter ";" -NoTypeInformation
-
-
-New-Object -TypeName PSCustomObject -Property @{
-FeedName = $deltaNv_NOM_APPRENANT
-} | Export-Csv -Path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers_$((Get-Date).ToString('yyyy-MM-dd')).csv" -NoTypeInformation -Append
-
+    import-csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv" -delimiter ";" | export-csv -append -path "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers_$((Get-Date).ToString('yyyy-MM-dd')).csv" -delimiter ";" -NoTypeInformation
+    import-csv "C:\Users\tl\Desktop\STAGE\PSCSVAD\backups\ADUsers_$((Get-Date).ToString('yyyy-MM-dd')).csv"
 }
 
 # CrÃ©ation #
 
 function creation
 {
-$ADUsers = Import-csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsersTri.csv
+$ADUsers = Import-csv C:\Users\tl\Desktop\STAGE\PSCSVAD\ADUsers.csv
 
 foreach ($User in $ADUsers)
 {
@@ -451,7 +446,7 @@ function initVariables
     $global:deltaPartis_ABREGE_GROUPE_APPRENANT = @()
 
     $global:deltaNv_NOM_APPRENANT = @()
-    $global:deltaNv_PRENOM_APPRENANT = @()
+    $global:deltaNv_PRENOM_APPRENANT  = @()
     $global:deltaNv_NOM_NET_UTILISATEUR_APPRENANT = @()
     $global:deltaNv_PASSWORD_NET_UTILISATEUR_APPRE = @()
     $global:deltaNv_MDP_AD = @()
@@ -547,7 +542,7 @@ While($exit -ne 1)   # If($choix -eq "") {}
     If($choix -eq "f") {chercherUtilisateur}
 
     If($choix -eq "usmad") {utilisateursSansMDP}
-    If($choix -eq "uiy") {utilisateursSansMDP}
+    If($choix -eq "uiy") {utilisateursInactifsYpareo}
 
     If($choix -eq "rb") {lectureRawBDD}
     If($choix -eq "re") {lectureRawExport}
